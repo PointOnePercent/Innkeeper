@@ -1,5 +1,4 @@
 import { Client, TextChannel, User } from 'discord.js';
-import { msgEdit, msgDelete, userJoin, userLeave, botJoin } from './events';
 import { classifyMessage } from './message';
 import { log } from './log';
 
@@ -9,13 +8,8 @@ let bot: Client;
 export async function initialize(token: string): Promise<void> {
 	bot = new Client();
 	bot.on('message', classifyMessage);
-	bot.on('messageUpdate', msgEdit);
-	bot.on('messageDelete', msgDelete);
-	bot.on('guildCreate', botJoin);
-	bot.on('guildMemberAdd', userJoin);
-	bot.on('guildMemberRemove', userLeave);
 	await bot.login(token);
-	log.INFO('Arcybot starts working!');
+	log.INFO('Innkeeper bot starts working!');
 }
 
 export function findTextChannel(

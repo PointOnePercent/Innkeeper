@@ -45,14 +45,6 @@ class Command {
 	}
 }
 
-class Reaction {
-	public channel: Discord.TextChannel | Discord.DMChannel | Discord.NewsChannel;
-
-	constructor(msg: Discord.Message) {
-		this.channel = msg.channel;
-	}
-}
-
 export class TextCommand extends Command implements IExecuteText {
 	public execute(content: string): void {
 		this.canBeExecuted && this.channel.send(content);
@@ -85,19 +77,5 @@ export class CustomCommand extends Command implements IExecuteCustom {
 		...args: Array<unknown>
 	): void {
 		this.canBeExecuted && fn(...args);
-	}
-}
-
-export class TextReaction extends Reaction implements IExecuteText {
-	public execute(content: string): void {
-		this.channel.send(content);
-	}
-}
-export class CustomReaction extends Reaction implements IExecuteCustom {
-	public execute(
-		fn: (...args: unknown[]) => unknown,
-		...args: Array<unknown>
-	): void {
-		fn(...args);
 	}
 }

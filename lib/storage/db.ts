@@ -3,7 +3,7 @@ import assert from 'assert';
 import type { GuildMember, Guild } from 'discord.js';
 import { IEmbed } from '../types/command';
 
-const DB_NAME = 'PUT_NAME_HERE';
+const DB_NAME = 'innkeeper';
 let db: Db;
 
 export const connectToDb = async (url: string): Promise<void> => {
@@ -28,16 +28,9 @@ export async function upsertOne<T>(
 export interface User {
 	id: string;
 	discordId: string;
-	updated: number;
 	punished: boolean;
-	description: string | undefined;
-	membership: {
-		serverId: string;
-		messageCount: number;
-		joined: number;
-		firstMessage: number;
-	}[];
 }
+[];
 
 export async function upsertUser(id: string, user: User): Promise<void> {
 	// TODO this throws cyclic dependency error - FIX IT!
@@ -139,27 +132,4 @@ export async function findCommandByKeyword(
 ): Promise<Command | undefined> {
 	const c = db.collection('commands');
 	return (await c.findOne({ keyword })) ?? undefined;
-}
-
-export interface Reaction {
-	id: string;
-	keywords: string[];
-	reactionList: any[];
-}
-
-export async function findReactionsById(id: string): Promise<Reaction[]> {
-	return await db.collection('reactions').find({ id }).toArray();
-}
-
-export async function findAllReactionsInMessage(
-	msg: string,
-): Promise<Reaction[]> {
-	const content = msg.toLowerCase().split(' ');
-	// This could probably be much quicker with a lookup table - it will slow down quite a bit as more reactions get added
-	const reactions = await db.collection('reactions').find({}).toArray();
-	return reactions.filter((r: Reaction) => {
-		const words = r.keywords.filter(keyword => content.includes(keyword));
-		// all of the keywords must be present in the sentence at once
-		return words.length === r.keywords.length;
-	});
 }

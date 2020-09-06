@@ -6,7 +6,6 @@ let config: Options;
 
 interface Options {
 	DISCORD_TOKEN: string;
-	CAT_API_TOKEN: string;
 	DATABASE_URL: string;
 }
 

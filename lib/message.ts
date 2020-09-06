@@ -1,16 +1,9 @@
 import Discord from 'discord.js';
 import { TextCommand, EmbedCommand } from './commands/logic';
-import { Reaction } from './commands/reactions';
 import { getKeyword, getCommandSymbol } from './helpers';
-import {
-	handleUserNotInDatabase,
-	handlePossibleMembershipRole,
-} from './events';
-import { happensWithAChanceOf } from './rng';
 import { Command } from './commands/list';
-import { IReactionDetails } from './types/reaction';
 
-import { findCommandByKeyword, findAllReactionsInMessage } from './storage/db';
+import { findCommandByKeyword } from './storage/db';
 
 // LOGIC
 
@@ -49,26 +42,6 @@ const answerCommand = async (msg: Discord.Message) => {
 	await msg.react(':questionmark:244535324737273857');
 };
 
-const checkForReactionTriggers = async (msg: Discord.Message) => {
-	const reactions = await findAllReactionsInMessage(msg.content);
-	if (reactions.length === 0) {
-		return;
-	}
-
-	reactions.map(reaction => {
-		const chosenReaction = reaction.reactionList.find(
-			(reaction: IReactionDetails) => happensWithAChanceOf(reaction.chance),
-		);
-		if (chosenReaction) {
-			chosenReaction.emoji && msg.react(chosenReaction.emoji);
-			chosenReaction.response && msg.channel.send(chosenReaction.response);
-			chosenReaction.function &&
-				Reaction[chosenReaction.function] &&
-				Reaction[chosenReaction.function](msg);
-		}
-	});
-};
-
 // MAIN FUNCTION
 
 const classifyMessage = async (msg: Discord.Message): Promise<void> => {
@@ -79,15 +52,10 @@ const classifyMessage = async (msg: Discord.Message): Promise<void> => {
 		answer(msg, 'You cannot speak to me in private.');
 		return;
 	}
-
-	await handleUserNotInDatabase(msg.member, msg);
-	await handlePossibleMembershipRole(msg);
-
 	if (await messageStartsWithCommandSymbol(msg)) {
 		answerCommand(msg);
 		return;
 	}
-	await checkForReactionTriggers(msg);
 };
 
 export { classifyMessage, isUserAdmin };
