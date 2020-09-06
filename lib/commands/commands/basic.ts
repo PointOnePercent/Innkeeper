@@ -24,7 +24,10 @@ export const help = async (msg: Discord.Message): Promise<void> => {
 			if (command.description)
 				content += `- **${sym}${command.keyword}** - ${command.description}\n`;
 		});
-		fields.push({ title, content });
+		if (content) fields.push({ title, content });
+	}
+	if (fields.length === 0) {
+		fields.push({ title: ':(', content: 'There is no user commands.' });
 	}
 
 	const embed = createEmbed('📜 List of commands', fields);
@@ -53,11 +56,14 @@ export const hmod = async (msg: Discord.Message): Promise<void> => {
 	for (const category in commands) {
 		const title = `Category ${category.toUpperCase()}`;
 		let content = '';
-		commands[category].map(
-			(command: Command) =>
-				(content += `\`\`-\`\`**${sym}${command.keyword}** - ${command.description}\n`),
-		);
-		fields.push({ title, content });
+		commands[category].map((command: Command) => {
+			if (command.description)
+				content += `\`\`-\`\`**${sym}${command.keyword}** - ${command.description}\n`;
+		});
+		if (content) fields.push({ title, content });
+	}
+	if (fields.length === 0) {
+		fields.push({ title: ':(', content: 'There is no moderator commands.' });
 	}
 
 	const embed = createEmbed('📜 List of moderator commands', fields);
