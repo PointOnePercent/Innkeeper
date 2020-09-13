@@ -23,7 +23,7 @@
 		"jsdom": "^16.1.0",
 		"moment": "^2.24.0",
 		"mongodb": "^3.5.9",
-		"node-fetch": "^2.6.0",
+		"node-fetch": "^2.6.1",
 		"rimraf": "^2.6.3",
 		"saslprep": "^1.0.3",
 		"sharp": "^0.24.0",
